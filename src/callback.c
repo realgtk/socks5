@@ -247,9 +247,11 @@ void client_recv_cb(struct ev_loop *loop, struct ev_io *w, int revents) {
         case SOCKS5_CONN_STAGE_USERNAMEPASSWORD: {
             struct socks5_userpass_req req;
             memset(&req, 0, sizeof(struct socks5_userpass_req));
-
+            
+//*************Some clients did not follow the socks5 protocol,req.ver is 0x05, not 0x01.           
             req.ver = *client->input->data;
-            if (SOCKS5_AUTH_USERNAMEPASSWORD_VER != req.ver) {
+            //if (SOCKS5_AUTH_USERNAMEPASSWORD_VER != req.ver) {
+            if (req.ver !=0x01 && req.ver !=0x05) {
                 logger_debug("invalid socks5 version: [%d]\n", *client->input->data);
                 goto _close_conn;
             }
